@@ -1,0 +1,400 @@
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let tempgg = 0;
+        function remakeSidebarTag(){
+            const blogSidebarCat = document.querySelector("body.blog .sidebar-container .widget_tag_cloud");
+            const blogSidebar = document.querySelector("body.blog .sidebar-container");
+
+            const blogSidebarCatItem = document.querySelectorAll("body.blog .sidebar-container .widget_tag_cloud a");
+            if(blogSidebarCatItem.length > 0 && blogSidebarCat && blogSidebar){
+                
+                let SidebarCatItemMake = document.createElement("button");
+                let SidebarCatItemMakeCon = document.createElement("div");
+                let SidebarCatItemMakeClone;
+                let tempHrefg;
+                let tempHrefgh;
+                let tempHrefgArr = [];
+                let tempHrefgArr2 = [];
+                let tempCo;
+
+                SidebarCatItemMakeCon.classList.add("sidebar__con");
+                SidebarCatItemMake.classList.add("sidebar__btn");
+                for(let i = 0; i < blogSidebarCatItem.length; i++){
+                    if(blogSidebarCatItem[i].textContent.includes(" != ")){
+                        tempHrefgh = blogSidebarCatItem[i].textContent.split("!=");
+                        tempHrefgArr.push(tempHrefgh[0]);
+    
+                    }
+                }
+                for(let i = 0; i < tempHrefgArr.length; i++){
+                    if(i == 0){
+                        tempCo = tempHrefgArr[i];
+                        tempHrefgArr2.push(tempCo);
+                    } else{
+                        if(tempCo != tempHrefgArr[i]){
+                            tempCo = tempHrefgArr[i];
+                            tempHrefgArr2.push(tempCo);
+                        
+                        }
+                    }
+                }
+                let blogSidebarCatClone;
+            
+                let SidebarCatItemMakeConClone;
+                tempgg = tempHrefgArr2.length;
+                for(let i = 0; i < tempHrefgArr2.length; i++){
+                    SidebarCatItemMakeConClone = SidebarCatItemMakeCon.cloneNode(true);
+                    blogSidebarCatClone = blogSidebarCat.cloneNode(true);
+                    const blogSidebarCatTitle = blogSidebarCatClone.querySelector(".widget-title");
+                    if(blogSidebarCatTitle){
+                        blogSidebarCatTitle.textContent = tempHrefgArr2[i];
+                    
+                    }
+                    let blogSidebarCatItemClassName;
+                    let itemperebor;
+                    let tempName;
+                    let tempName1 = "";
+                                    let g;
+                    SidebarCatItemMakeClone = SidebarCatItemMake.cloneNode(true);
+                    for(let j = 0; j < blogSidebarCatItem.length; j++){
+                        
+                        
+                        if(blogSidebarCatItem[j].textContent.includes(tempHrefgArr2[i] + "!=")){
+                
+                            if(blogSidebarCatItem[j].textContent.match(/[a-z]/i)){
+                                SidebarCatItemMakeClone = SidebarCatItemMake.cloneNode(true);
+                                tempName = blogSidebarCatItem[j].textContent.split(/,| |-/);
+                                for(let m = 0; m < tempName.length; m++){
+                                    if(tempName[m].includes("(")){
+                                        tempName[m].replace("(", "");;
+                                    }
+                                    if(tempName[m].includes(")")){
+                                        tempName[m].replace(")", "");;
+                                    }
+                                    if(tempName[m].match(/[a-z]/i)){
+                                            let tire = "-";
+                                        if(tempName1 == ""){
+                                            tempName1 =  tempName[m];
+                                            g = m;
+                                        } else{
+                                            
+                                            tempName1 =  tempName1 + tire.repeat(m - g) + tempName[m];
+                                            g = m;		
+                                        }
+                                    }
+                                }
+                                SidebarCatItemMakeClone.dataset.hrefSplit = tempName1.toLowerCase();
+                                tempName1 = "";
+                            } else{
+                                blogSidebarCatItemClassName = blogSidebarCatItem[j].className.split(" ");
+                                SidebarCatItemMakeClone = SidebarCatItemMake.cloneNode(true);
+                                for(let f = 0; f < blogSidebarCatItemClassName.length; f++){
+                                    if(blogSidebarCatItemClassName[f].includes("tag-link-") && !blogSidebarCatItemClassName[f].includes("position")){
+                                        
+                                        SidebarCatItemMakeClone.dataset.hrefSplit = "tag-" + blogSidebarCatItemClassName[f].split("tag-link-")[1];
+                                
+                                    }
+        
+                                }
+                            }
+                            
+                            let tempHrefff = blogSidebarCatItem[j].href.split("/");
+                            if(tempHrefff[tempHrefff.length - 2].includes("%")){
+                                let gggg = "";
+                                let hh = tempHrefff[tempHrefff.length - 2].split("-");
+                                hh.forEach((elem) => {
+                                    if(!elem.includes("%")){
+                                        gggg += elem + "-";
+                                    }
+                                });
+                                gggg.slice(1,-1);
+                                SidebarCatItemMakeClone.dataset.hrefSplit1 = gggg;
+                            } else{
+                                SidebarCatItemMakeClone.dataset.hrefSplit1 = tempHrefff[tempHrefff.length - 2];
+                            }
+                            SidebarCatItemMakeClone.dataset.hrefSplit2 = i + 1;
+                            SidebarCatItemMakeClone.textContent = blogSidebarCatItem[j].textContent.split("!=")[1];
+                            SidebarCatItemMakeConClone.append(SidebarCatItemMakeClone);
+                        }
+
+                    }
+                    blogSidebarCatClone.style.display = "block";
+                    blogSidebarCatClone.append(SidebarCatItemMakeConClone);
+                    blogSidebar.prepend(blogSidebarCatClone);
+                            
+                }
+                
+                ClearAllBtn();
+            }  
+        }
+
+
+        
+            function hideCards(){
+                const catItem = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn");
+                const catbody = document.querySelector("body.blog .sidebar-container");
+                const cardItem = document.querySelectorAll("body.blog .wd-blog-holder .post");
+                if(cardItem.length > 0 && catbody && catItem.length > 0){
+                    catbody.addEventListener('click', (event) => {
+                        
+                        if(event.target.tagName == "BUTTON" && event.target.classList.contains("sidebar__btn")){
+                            if(!event.target.classList.contains("sidebar__btn--active")){
+                                event.target.classList.add("sidebar__btn--active");
+                            } else{
+                                event.target.classList.remove("sidebar__btn--active");
+                            }
+                            let temp1 = 0;
+                            let temp2 = 0;
+                            let temp3 = 0;
+                            let tempcatItemActive = 0;
+                            let allarr = [];
+                            let allar1 = [];
+                            catItem.forEach((elem1) => {
+                                if(elem1.classList.contains("sidebar__btn--active")){
+                                    temp3 = 1;
+                                    if(!allarr.includes(elem1.dataset.hrefSplit2)){
+                                        allarr.push(elem1.dataset.hrefSplit2);
+                                    }
+                                }
+                            });
+                            let allarrsize = allarr.length;
+                            
+                            if(temp3 == 0){
+                                cardItem.forEach((elem) => {
+                                    elem.style.display = "block";
+                                });
+                            } else{
+                                for(let m = 0; m < cardItem.length; m++){
+                                    cardItem[m];
+                                    temp1 = 0;
+                                    temp2 = 0;
+                                    allar1 = [...allarr];
+                                    catItem.forEach((elem1) => {
+                                        
+                                        if(elem1.classList.contains("sidebar__btn--active") && ((cardItem[m].className.includes(elem1.dataset.hrefSplit) && elem1.dataset.hrefSplit != "") || (cardItem[m].className.includes(elem1.dataset.hrefSplit1) && elem1.dataset.hrefSplit1 != ""))){
+                                                temp1 += 1;
+                                                for(let i = 0; i < allar1.length; i++){
+                                                    if(elem1.dataset.hrefSplit2 == allar1[i]){
+                                                        allar1.splice(i, 1);
+                                                        temp2 += 1;
+                                                    } 
+                                                }
+                                            
+                                        } 
+                                    });
+                                    
+                                    
+                                    if(temp1 == 0 || temp2 != allarrsize){
+                                        cardItem[m].style.display = "none";
+                                    } else if(temp1 != 0 && temp2 == allarrsize){
+                                        cardItem[m].style.display = "block";
+                                    }
+                                }
+                                
+                              
+                            }
+                        } else{
+                            return false;
+                        }
+                });
+            }
+        }
+        
+        function clickCat(){
+            const cardItemLink1 = document.querySelectorAll("body.blog .wd-blog-holder .post .wd-post-link");
+            const cardItemLink2 = document.querySelectorAll("body.blog .wd-blog-holder .post .post-title");
+
+            if(cardItemLink2.length > 0 && cardItemLink1.length > 0){
+                for(let i = 0; i < cardItemLink1.length; i++){
+                    cardItemLink1[i].addEventListener('click', (event) => {
+                        
+                        const catItemActive = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn--active");
+                        if(catItemActive.length > 0){
+                            let tempClickCat = "";
+                            for(let j = 0; j < catItemActive.length; j++){
+                            
+                                tempClickCat = tempClickCat + " " + catItemActive[j].dataset.hrefSplit;
+                            }
+                                                    
+                            window.localStorage.setItem('Activebtns', tempClickCat);
+                                                    
+                        }
+                    })
+                }
+                for(let i = 0; i < cardItemLink2.length; i++){
+                    cardItemLink2[i].addEventListener('click', (event) => {
+                        
+                        const catItemActive = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn--active");
+                        if(catItemActive.length > 0){
+                            let tempClickCat = "";
+                            for(let j = 0; j < catItemActive.length; j++){
+                                tempClickCat = tempClickCat + " " + catItemActive[j].dataset.hrefSplit;
+                            }
+                                                    
+                            window.localStorage.setItem('Activebtns', tempClickCat);
+                                                    
+                        }
+                    })
+                }
+            }
+
+            
+        }
+
+
+        
+
+
+
+
+        remakeSidebarTag();
+        hideCards();
+        let gfdd = 0;
+        setInterval(()=>{
+            const catItem = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn");
+    
+                const cardItem = document.querySelectorAll("body.blog .wd-blog-holder .post");
+                if(cardItem.length > 0 && catItem.length > 0){
+                            if(gfdd != cardItem){
+
+                                let temp1 = 0;
+                                let temp2 = 0;
+                                let temp3 = 0;
+                                let tempcatItemActive = 0;
+                                let allarr = [];
+                                let allar1 = [];
+                                catItem.forEach((elem1) => {
+                                    if(elem1.classList.contains("sidebar__btn--active")){
+                                        temp3 = 1;
+                                        if(!allarr.includes(elem1.dataset.hrefSplit2)){
+                                            allarr.push(elem1.dataset.hrefSplit2);
+                                        }
+                                    }
+                                });
+                                let allarrsize = allarr.length;
+                                
+                                if(temp3 == 0){
+                                    cardItem.forEach((elem) => {
+                                        elem.style.display = "block";
+                                    });
+                                } else{
+                                    for(let m = 0; m < cardItem.length; m++){
+                                        cardItem[m];
+                                        temp1 = 0;
+                                        temp2 = 0;
+                                        allar1 = [...allarr];
+                                        catItem.forEach((elem1) => {
+                                            
+                                            if(elem1.classList.contains("sidebar__btn--active") && ((cardItem[m].className.includes(elem1.dataset.hrefSplit) && elem1.dataset.hrefSplit != "") || (cardItem[m].className.includes(elem1.dataset.hrefSplit1) && elem1.dataset.hrefSplit1 != ""))){
+                                                    temp1 += 1;
+                                                    for(let i = 0; i < allar1.length; i++){
+                                                        if(elem1.dataset.hrefSplit2 == allar1[i]){
+                                                            allar1.splice(i, 1);
+                                                            temp2 += 1;
+                                                        } 
+                                                    }
+                                                
+                                            } 
+                                        });
+                                        
+                                        
+                                        if(temp1 == 0 || temp2 != allarrsize){
+                                            cardItem[m].style.display = "none";
+                                        } else if(temp1 != 0 && temp2 == allarrsize){
+                                            cardItem[m].style.display = "block";
+                                        }
+                                    }
+                                    
+                                    gfdd = cardItem;
+                                }
+
+                            }
+            }
+        }, 10);   
+        clickCat();
+
+
+    if(window.localStorage.getItem('Activebtns') != null && window.location.href == "http://soft.leo-group.by/blog/"){
+                const catItem = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn");
+            
+                if(catItem.length > 0){
+                    let tempArrg = window.localStorage.getItem('Activebtns').split(' ');
+                    
+                    for(let i = 0; i < catItem.length; i++){
+                        for(let j = 1; j < tempArrg.length; j++){
+                            if(catItem[i].dataset.hrefSplit.includes(tempArrg[j])){
+                                catItem[i].click();
+                            }
+                        }
+                    }
+                    window.localStorage.removeItem('Activebtns');
+                }
+            } 
+
+
+    if(window.localStorage.getItem("tempTag") != null){
+        const catItem = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn");
+
+        if(catItem.length > 0){  
+            for(let i = 0; i < catItem.length; i++){
+                if(catItem[i].textContent.includes(window.localStorage.getItem("tempTag"))){
+                    if(!catItem[i].classList.contains("sidebar__btn--active")){
+                        catItem[i].click();
+                    }
+                }
+            }
+                    window.localStorage.removeItem('tempTag');
+        }      
+    }
+        
+
+
+
+    function autoRedirectCatalog(){
+        if(window.location.href.includes("/tag/")  || window.location.href.includes("/category/") || window.location.href.includes("/blog/page/") ){
+            window.location.href = "http://soft.leo-group.by/blog/";
+        }
+        
+    }
+    function ClearAllBtn(){
+
+        const wudget = document.querySelector("body.blog .widget-area");
+        if(wudget){
+            let clearAllBtn = document.createElement("button");
+            clearAllBtn.classList.add("clear__all");
+            clearAllBtn.textContent = "Сбросить фильтры";
+            wudget.prepend(clearAllBtn);
+            clearAllBtn.addEventListener('click', (event) => {
+                const catItemActive = document.querySelectorAll("body.blog .sidebar-container .sidebar__btn--active");
+                if(catItemActive.length > 0){
+                    for(let i = 0; i < catItemActive.length; i++){
+                        catItemActive[i].classList.remove("sidebar__btn--active");
+                    }
+                }
+            })
+        }
+    }
+
+    autoRedirectCatalog();
+
+    function deleteTextTags() {
+            const tagsAll = document.querySelectorAll(".single-post .tags-list a");
+            const tagsAllCon = document.querySelector(".single-post .single-meta-tags");
+            if(tagsAll.length > 0 && tagsAllCon){
+                for(let i = 0; i < tagsAll.length; i++){
+                    tagsAll[i].textContent = tagsAll[i].textContent.split("!=").pop();
+                    tagsAll[i].href = "/blog";
+                    tagsAllCon.style.display = "flex";
+                    tagsAll[i].addEventListener('click', () => {
+                        window.localStorage.setItem("tempTag", tagsAll[i].textContent);
+                    });
+                }
+            }
+        }
+
+    deleteTextTags();
+    });
+    
+</script>
+
+    
